@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Xml.Schema;
 
 namespace Leet_MayChallenge
 {
@@ -113,6 +114,213 @@ canConstruct("aa", "aab") -> true*/
             }
             return Convert.ToInt32(result, 2);
         }
+        /*Given a string, find the first non-repeating character in it and return it's index. If it doesn't exist, return -1.
+
+Examples:
+
+s = "leetcode"
+return 0.
+
+s = "loveleetcode",
+return 2.*/
+        public int FirstUniqChar(string s)
+        {
+            /*var ch = s.GroupBy(r => r).Where(r => r.Count() == 1).Select(r=>r.Key).FirstOrDefault();
+            if (ch == '\0')
+                return -1;
+            return s.IndexOf(ch.ToString());*/
+                 for(int i=0;i<s.Length;i++)
+                {
+                    int index = s.IndexOf(s[i]);
+                    if (index!=-1 && index==s.LastIndexOf(s[i]))
+                    {
+                        return index;
+                    }
+                    else
+                    {
+                        index = -1;
+                    }
+                }
+            return -1;
+          
+        }
+        // Time effective solution
+        public int FirstUniqChar1(string s)
+        {
+            var charAndCount = new int[256];
+
+            foreach (var c in s)
+            {
+                charAndCount[c]++;
+            }
+
+            for (int i = 0; i < s.Length; i++)
+            {
+                if (charAndCount[s[i]] == 1)
+                {
+                    return i;
+                }
+            }
+            return -1;
+        }
+        /*Given an array of size n, find the majority element. The majority element is the element that appears more than ⌊ n/2 ⌋ times.
+
+You may assume that the array is non-empty and the majority element always exist in the array.
+
+Example 1:
+
+Input: [3,2,3]
+Output: 3
+Example 2:
+
+Input: [2,2,1,1,1,2,2]
+Output: 2*/
+        public int MajorityElement(int[] nums)
+        {
+            Dictionary<int, int> dict = new Dictionary<int, int>();
+            for (int i = 0; i < nums.Length; i++)
+            {
+                if(dict.ContainsKey(nums[i]))
+                {
+                    dict[nums[i]]=dict[nums[i]]+1;
+                }
+                else
+                {
+                    dict.Add(nums[i], 1);
+                }
+                
+            }
+            
+            int max = dict.Values.Max();
+            return dict.FirstOrDefault(x => x.Value == max).Key;  
+        }
+        //Time Effective solution 
+        public int MajorityElement1(int[] nums)
+        {
+            // Boyer-Moore Voting Algorithm
+            var candidate = 0;
+            var count = 0;
+
+            for (var i = 0; i < nums.Length; i++)
+            {
+                // eg. {5,7,7,5,7}
+                if (count == 0)
+                {
+                    //cand=5//7
+                    candidate = nums[i];
+                    //count=1//1
+                    count++;
+                }
+                else
+                {
+                    //count=0
+                    if (nums[i] == candidate) count++;
+                    else count--;
+                }
+            }
+
+            return candidate;
+        }
+
+       
+
+        /*You are given an array coordinates, coordinates[i] = [x, y], where [x, y] represents the coordinate of a point. 
+         * Check if these points make a straight line in the XY plane.*/
+
+        public bool CheckStraightLine(int[][] coordinates)
+        {
+            if (coordinates.Length == 1 || coordinates.Length == 0)
+                return true;
+            int x0 = coordinates[0][0];
+            int y0 = coordinates[0][1];
+            int x1 = coordinates[1][0];
+            int y1 = coordinates[1][1];
+            //[[-4,-3],[1,0],[3,-1],[0,-1],[-5,2]]
+            int dx = x1 - x0, dy = y1 - y0;
+            //dx=5 , dy=3, slope is dy/dx
+            foreach (var coord in coordinates)
+            {
+                int x = coord[0], y = coord[1];
+                //Instead of checking dy/dx =(y1-y)/(x1-x), cross multiply
+                //dx*(y1-y)=dy*(x1-x)
+                if (dx * (y1 - y) != dy * (x1 - x))
+                    return false;
+            }
+            return true;
+        }
+
+
+        /*To find if a number is perfect square root or not eg 16 is perfect square*/
+        public bool IsPerfectSquare(int num)
+        {
+            //My solution was return int.TryParse(Math.sqrt(num),out int val)
+            long begin = 0;
+            long end = num;
+            while (begin <= end)
+            {
+                long mid = (end - begin) / 2 + begin;
+                long mid2 = mid * mid;
+
+                if (mid2 == num)
+                {
+                    return true;
+                }
+                if (mid2 < num)
+                {
+                    begin = mid + 1;
+                }
+                if (mid2 > num)
+                {
+                    end = mid - 1;
+                }
+            }
+            return false;
+        }
+        /*In a town, there are N people labelled from 1 to N.  There is a rumor that one of these people is secretly the town judge.
+
+        If the town judge exists, then:
+        The town judge trusts nobody.
+        Everybody (except for the town judge) trusts the town judge.
+        There is exactly one person that satisfies properties 1 and 2.
+        You are given trust, an array of pairs trust[i] = [a, b] representing that the person labelled a trusts the person labelled b.
+
+        If the town judge exists and can be identified, return the label of the town judge.  Otherwise, return -1.
+
+        Example 1:
+        Input: N = 2, trust = [[1,2]]
+        Output: 2
+        Example 2:
+        Input: N = 3, trust = [[1,3],[2,3]]
+        Output: 3
+        Example 3:
+        Input: N = 3, trust = [[1,3],[2,3],[3,1]]
+        Output: -1
+        Example 4:
+        Input: N = 3, trust = [[1,2],[2,3]]
+        Output: -1
+        Example 5:
+        Input: N = 4, trust = [[1,3],[1,4],[2,3],[2,4],[4,3]]
+        Output: 3*/
+        public int FindJudge(int N, int[][] trust)
+        {
+            if (trust.Length == 0)
+                return N;
+            if (trust.Length == 1)
+                return trust[0][1];
+            int[] num = new int[N + 1];
+            HashSet<int> a = new HashSet<int>(trust.Length);
+            for (int i = 0; i < trust.Length; i++)
+            {
+                a.Add(trust[i][0]);
+                num[trust[i][1]] = num[trust[i][1]] + 1;
+
+            }
+            int max = Array.IndexOf(num, num.Max());
+            if (!a.Contains(max) && (num.Max() == N - 1))
+                return max;
+            return -1;
+        }
+
         static void Main(string[] args)
         {
             Program p = new Program();
@@ -121,6 +329,32 @@ canConstruct("aa", "aab") -> true*/
             string jewel = "aA";
             string stone = "aAAbbbb";
             p.NumJewelsInStones(jewel, stone);
+
+            p.FirstUniqChar("LL");
+
+            int[] nums = {6,5,5 };
+            p.MajorityElement(nums);
+
+            int[][] coord = new int[5][];
+
+            coord[0] = new int[] { -4, -3 };
+            coord[1] = new int[] { 1, 0 };//[[1,1],[1,1],[0,2],[1,3]]
+            coord[2] = new int[] { 3, -1 };
+            coord[3] = new int[] { 0, -1 };
+            coord[4] = new int[] { -5, 2 };
+            p.CheckStraightLine(coord);
+
+            // [[1,3],[1,4],[2,3],[2,4],[4,3]]
+            int[][] townjudge = new int[5][];
+
+            townjudge[0] = new int[] { 1, 3 };
+            townjudge[1] = new int[] { 1, 4 };//[[1,1],[1,1],[0,2],[1,3]]
+            townjudge[2] = new int[] { 2, 3 };
+            townjudge[3] = new int[] { 2, 4 };
+            townjudge[4] = new int[] { 4, 3 };
+            p.FindJudge(4,townjudge);
+            //coordiChenates[0] = { -4,-3};//[[-4,-3],[1,0],[3,-1],[0,-1],[-5,2]]
+            //,[1,0],[3,-1],[0,-1],[-5,2]]
 
 
         }
