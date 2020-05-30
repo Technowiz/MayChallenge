@@ -1,7 +1,7 @@
+C:\GitHub\MayChallenge\Leet-MayChallenge\Leet-MayChallenge\obj\Debug\Leet-MayChallenge.csproj.CoreCompileInputs.cache
+C:\GitHub\MayChallenge\Leet-MayChallenge\Leet-MayChallenge\obj\Debug\Leet-MayChallenge.csprojAssemblyReference.cache
 C:\GitHub\MayChallenge\Leet-MayChallenge\Leet-MayChallenge\bin\Debug\Leet-MayChallenge.exe.config
 C:\GitHub\MayChallenge\Leet-MayChallenge\Leet-MayChallenge\bin\Debug\Leet-MayChallenge.exe
 C:\GitHub\MayChallenge\Leet-MayChallenge\Leet-MayChallenge\bin\Debug\Leet-MayChallenge.pdb
-C:\GitHub\MayChallenge\Leet-MayChallenge\Leet-MayChallenge\obj\Debug\Leet-MayChallenge.csprojAssemblyReference.cache
-C:\GitHub\MayChallenge\Leet-MayChallenge\Leet-MayChallenge\obj\Debug\Leet-MayChallenge.csproj.CoreCompileInputs.cache
 C:\GitHub\MayChallenge\Leet-MayChallenge\Leet-MayChallenge\obj\Debug\Leet-MayChallenge.exe
 C:\GitHub\MayChallenge\Leet-MayChallenge\Leet-MayChallenge\obj\Debug\Leet-MayChallenge.pdb
