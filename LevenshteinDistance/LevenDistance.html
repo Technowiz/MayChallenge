@@ -1,0 +1,49 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <script src="Scripts/jquery-3.4.1.js"></script>
+    <link href="Content/bootstrap.css" rel="stylesheet" />
+    <script type="text/javascript">
+        $(document).ready(function () {
+            var ulDistance = $('#ulDistance');
+
+            $('#btn').click(function () {
+                var string1 = $('#txtStr1').val();
+                var string2 = $('#txtStr2').val();
+                var urldata = 'https://localhost:44367/api/distance?s1=' + string1 + '&s2=' + string2;
+                $.ajax({
+                    type: 'GET',
+                    url: urldata,
+                    dataType: 'json',
+                    success: function (data) {
+                        ulDistance.empty();
+                        $.each(data, function (index, val) {
+                            ulDistance.append('<li> Levenshtein Distance is :' + val + '</li>');
+                        });
+                    }
+                })
+            });
+            $('#btnClear').click(function () {
+                ulDistance.empty();
+                document.getElementById("txtStr1").value = "";
+                document.getElementById("txtStr2").value = "";
+            });
+        });
+    </script>
+    <title></title>
+</head>
+<body>
+    <div class="form-group">
+        <label>Enter first string</label>
+        <input id="txtStr1" class="form-control" type="text" />
+        <br />
+        <label>Enter Second string</label>
+        <input id="txtStr2" class="form-control" type="text" />
+        <br />
+        <input id="btn" class="btn btn-default" type="button" value="Calculate Levenshtein Distance" />
+        <input id="btnClear" class="btn btn-default" type="button" value="Clear" />
+        <ul id="ulDistance"></ul>
+    </div>
+</body>
+</html>

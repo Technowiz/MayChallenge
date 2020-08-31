@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
 
 namespace Leet_MayChallenge
 {
@@ -63,7 +64,7 @@ canConstruct("aa", "aab") -> true*/
         public bool CanConstruct(string ransomNote, string magazine)
         {
             List<char> mylist = ransomNote.ToList();
-            foreach(char c in magazine)
+            foreach (char c in magazine)
             {
                 if (ransomNote.Contains(c))
                 {
@@ -126,20 +127,20 @@ return 2.*/
             if (ch == '\0')
                 return -1;
             return s.IndexOf(ch.ToString());*/
-                 for(int i=0;i<s.Length;i++)
+            for (int i = 0; i < s.Length; i++)
+            {
+                int index = s.IndexOf(s[i]);
+                if (index != -1 && index == s.LastIndexOf(s[i]))
                 {
-                    int index = s.IndexOf(s[i]);
-                    if (index!=-1 && index==s.LastIndexOf(s[i]))
-                    {
-                        return index;
-                    }
-                    else
-                    {
-                        index = -1;
-                    }
+                    return index;
                 }
+                else
+                {
+                    index = -1;
+                }
+            }
             return -1;
-          
+
         }
         // Time effective solution
         public int FirstUniqChar1(string s)
@@ -177,19 +178,19 @@ Output: 2*/
             Dictionary<int, int> dict = new Dictionary<int, int>();
             for (int i = 0; i < nums.Length; i++)
             {
-                if(dict.ContainsKey(nums[i]))
+                if (dict.ContainsKey(nums[i]))
                 {
-                    dict[nums[i]]=dict[nums[i]]+1;
+                    dict[nums[i]] = dict[nums[i]] + 1;
                 }
                 else
                 {
                     dict.Add(nums[i], 1);
                 }
-                
+
             }
-            
+
             int max = dict.Values.Max();
-            return dict.FirstOrDefault(x => x.Value == max).Key;  
+            return dict.FirstOrDefault(x => x.Value == max).Key;
         }
         //Time Effective solution 
         public int MajorityElement1(int[] nums)
@@ -218,7 +219,7 @@ Output: 2*/
 
             return candidate;
         }
-       
+
 
         /*Day -8-You are given an array coordinates, coordinates[i] = [x, y], where [x, y] represents the coordinate of a point. 
          * Check if these points make a straight line in the XY plane.*/
@@ -386,7 +387,7 @@ Output: 2*/
         Input: num = "10", k = 2
         Output: "0"
         Explanation: Remove all the digits from the number and it is left with nothing which is 0.*/
-      
+
         static string res = "";
         public string RemoveKdigits(string num, int k)
         {
@@ -469,12 +470,12 @@ Output: 2*/
             List<int> index = new List<int>();
             //char[] subs;
             //s: "cbaebabacd" p: "abc"
-            for (int i = 0; i < (s.Length-p.Length+1); i++)//11-3//8
+            for (int i = 0; i < (s.Length - p.Length + 1); i++)//11-3//8
             {
 
                 char[] subs = s.Substring(i, ana.Length).ToArray();
                 Array.Sort(subs);
-                if (anag==new string(subs))
+                if (anag == new string(subs))
                     index.Add(i);
             }
             return index;
@@ -490,7 +491,7 @@ Output: 2*/
             }
             for (int i = 0; i < s2.Length; i++)
             {
-                if (i< s2.Length-s1.Length+1)
+                if (i < s2.Length - s1.Length + 1)
                 {
                     count++;
                     chars[s2[i]]--;
@@ -509,7 +510,7 @@ Output: 2*/
             foreach (char c in s)
                 count[c]++;
             char[] ans = new char[s.Length];
-            for(int i=0; i<count.Length;i++)
+            for (int i = 0; i < count.Length; i++)
             {
                 ans[i] = Convert.ToChar(count[i]);
             }
@@ -545,16 +546,203 @@ Output: 2*/
             }
             return result.ToArray();
         }
+        /*We have a list of points on the plane.  Find the K closest points to the origin (0, 0).
+            (Here, the distance between two points on a plane is the Euclidean distance.)
+            You may return the answer in any order.  The answer is guaranteed to be unique (except for the order that it is in.)
+
+            Example 1:
+
+            Input: points = [[1,3],[-2,2]], K = 1
+            Output: [[-2,2]]
+            Explanation: 
+            The distance between (1, 3) and the origin is sqrt(10).
+            The distance between (-2, 2) and the origin is sqrt(8).
+            Since sqrt(8) < sqrt(10), (-2, 2) is closer to the origin.
+            We only want the closest K = 1 points from the origin, so the answer is just [[-2,2]].
+            Example 2:
+
+            Input: points = [[3,3],[5,-1],[-2,4]], K = 2
+            Output: [[3,3],[-2,4]]
+            (The answer [[-2,4],[3,3]] would also be accepted.) */
+        public int[][] KClosest(int[][] points, int K)
+        {
+
+            Dictionary<Double, int[]> sumDict = new Dictionary<double, int[]>();
+            
+            for(int i=0;i<points.Length;i++)
+            {
+                sumDict.Add(Math.Sqrt((double)points[i][0]*points[i][0]+points[i][1]*points[i][1]),points[i]);
+            }
+            var result = sumDict.OrderByDescending(x => x.Key).Take(K);
+            int[][] resultArr = new int[result.Count()][];
+            int count = 0;
+            foreach (var item in result)
+            {
+                resultArr[count++]=item.Value;
+            }
+            return resultArr;
+            
+        }
+        /*There are a total of numCourses courses you have to take, labeled from 0 to numCourses-1.
+        Some courses may have prerequisites, for example to take course 0 you have to first take course 1, which is expressed as a pair: [0,1]
+        Given the total number of courses and a list of prerequisite pairs, is it possible for you to finish all courses?
+
+        Example 1:
+        Input: numCourses = 2, prerequisites = [[1,0]]
+        Output: true
+        Explanation: There are a total of 2 courses to take. 
+                     To take course 1 you should have finished course 0. So it is possible.
+        Example 2:
+        Input: numCourses = 2, prerequisites = [[1,0],[0,1]]
+        Output: false
+        Explanation: There are a total of 2 courses to take. 
+                     To take course 1 you should have finished course 0, and to take course 0 you should
+                     also have finished course 1. So it is impossible.*/
+        List<int>[] graph;
+        int[] visited;
+
+        const int NotVisited = 0;
+        const int Visiting = 1;
+        const int Visited = 2;
+
+        public bool CanFinish(int numCourses, int[][] prerequisites)
+        {
+            graph = new List<int>[numCourses];
+            visited = new int[numCourses];
+
+            for (int i = 0; i < numCourses; i++)
+            {
+                graph[i] = new List<int>();
+                visited[i] = NotVisited;
+            }
+
+            foreach (int[] pair in prerequisites)
+            {
+                graph[pair[0]].Add(pair[1]);
+            }
+
+            for (int i = 0; i < numCourses; i++)
+            {
+                if (visited[i] == Visited) continue;
+                if (!Dfs(i)) return false;
+            }
+
+            return true;
+        }
+
+        public bool Dfs(int node)
+        {
+            visited[node] = Visiting;
+
+            foreach (int prereq in graph[node])
+            {
+                if (visited[prereq] == Visited)
+                    continue;
+
+                if (visited[prereq] == Visiting)
+                    return false;
+
+                bool canFinish = Dfs(prereq);
+                if (!canFinish) return false;
+            }
+
+            visited[node] = Visited;
+            return true;
+        }
+        /*Given two words word1 and word2, find the minimum number of operations required to convert word1 to word2.
+        You have the following 3 operations permitted on a word:
+        Insert a character
+        Delete a character
+        Replace a character
+        Example 1:
+
+        Input: word1 = "horse", word2 = "ros"
+        Output: 3
+        Explanation: 
+        horse -> rorse (replace 'h' with 'r')
+        rorse -> rose (remove 'r')
+        rose -> ros (remove 'e')
+        Example 2:
+
+        Input: word1 = "intention", word2 = "execution"
+        Output: 5
+        Explanation: 
+        intention -> inention (remove 't')
+        inention -> enention (replace 'i' with 'e')
+        enention -> exention (replace 'n' with 'x')
+        exention -> exection (replace 'n' with 'c')
+        exection -> execution (insert 'u')*/
+        public int MinDistance(string word1, string word2)
+        {
+            // Create a table to store 
+            // results of subproblems 
+            int m = word1.Length;
+            int n = word2.Length;
+            int[,] dp = new int[m + 1, n + 1];
+
+            // Fill d[][] in bottom up manner 
+            for (int i = 0; i <= m; i++)
+            {//Loop through first word 
+                for (int j = 0; j <= n; j++)
+                { //for every letter in first word , loop through secon word
+                  // If first string is empty, only option is to 
+                  // insert all characters of second string 
+                    if (i == 0)
+
+                        // Min. operations = j 
+                        dp[i, j] = j;//first for whole of j values are inserted
+
+                    // If second string is empty, only option is to 
+                    // remove all characters of second string 
+                    else if (j == 0)
+
+                        // Min. operations = i 
+                        dp[i, j] = i;
+
+                    // If last characters are same, ignore last char 
+                    // and recur for remaining string 
+                    else if (word1[i - 1] == word2[j - 1])
+                        dp[i, j] = dp[i - 1, j - 1];
+
+                    // If the last character is different, consider all 
+                    // possibilities and find the minimum 
+                    else
+                        dp[i, j] = 1 + min(dp[i, j - 1], // Insert 
+                                           dp[i - 1, j], // Remove 
+                                           dp[i - 1, j - 1]); // Replace 
+                }
+            }
+
+            return dp[m, n];
+        }
+        static int min(int x, int y, int z)
+        {
+            if (x <= y && x <= z)
+                return x;
+            if (y <= x && y <= z)
+                return y;
+            else
+                return z;
+        }
+
         static void Main(string[] args)
         {
             
             Program p = new Program();
-            int[][] a = new int[4][];
+            p.MinDistance("intention", "execution");
+            List<int> a = new List<int>();
+            List<int> b = new List<int>();
+            List<int> c = new List<int>();
+            a.AddRange(b);
+            int[][] a = new int[2][];
+            //[[1,3],[-2,2]], K = 1
+            a[0] = new int[] { 1,3 };
+            a[1] = new int[] { -2,2 };
 
-            a[0] = new int[] { 0,2 };
-            a[1] = new int[] { 5,10 };//[[1,1],[1,1],[0,2],[1,3]]
-            a[2] = new int[] { 13,23 };
-            a[3] = new int[] { 24,25 };
+            p.KClosest(a, 1);
+            //[[1,1],[1,1],[0,2],[1,3]]
+            //a[2] = new int[] { 13,23 };
+            //a[3] = new int[] { 24,25 };
 
 
         int[][] b = new int[4][];
