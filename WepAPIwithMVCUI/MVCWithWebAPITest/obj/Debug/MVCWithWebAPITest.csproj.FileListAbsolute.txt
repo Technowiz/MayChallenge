@@ -1,0 +1,2 @@
+C:\GitHub\Coding\MVCWithWebAPITest\obj\Debug\MVCWithWebAPITest.csprojAssemblyReference.cache
+C:\GitHub\Coding\MVCWithWebAPITest\obj\Debug\MVCWithWebAPITest.csproj.CoreCompileInputs.cache
