@@ -52,10 +52,10 @@ namespace LoggerLimiter
             {
                 int prevFreq=timeMap[message].Count;
                 timeMap[message].AddFirst(DateTime.Parse(inputs[0]));
-                var diff = (timeMap[message].First.Value.Subtract(timeMap[message].Last.Value).TotalMinutes);
+                var diff = (DateTime.Now.Subtract(timeMap[message].Last.Value).TotalMinutes);
                 while(diff>60)
                 {
-                    diff = (timeMap[message].Last.Value.Subtract(timeMap[message].First.Value).TotalMinutes);
+                    diff = (DateTime.Now.Subtract(timeMap[message].Last.Value).TotalMinutes);
                     timeMap[message].RemoveLast();
                 }
                 int currFreq = timeMap[message].Count;
