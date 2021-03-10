@@ -1,3 +1,10 @@
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Security.Cryptography.X509Certificates;
+using System.Text;
+using System.Threading.Tasks;
+
 namespace LoggerLimiter
 {
     class Program
@@ -50,27 +57,34 @@ namespace LoggerLimiter
             }
             else
             {
-                int prevFreq=timeMap[message].Count;
                 timeMap[message].AddFirst(DateTime.Parse(inputs[0]));
-                var diff = (DateTime.Now.Subtract(timeMap[message].Last.Value).TotalMinutes);
-                while(diff>60)
-                {
-                    diff = (DateTime.Now.Subtract(timeMap[message].Last.Value).TotalMinutes);
-                    timeMap[message].RemoveLast();
-                }
-                int currFreq = timeMap[message].Count;
-                if (prevFreq !=currFreq)
-                {
-                    freqMap[prevFreq].Remove(message);
-                    if (freqMap[prevFreq].Count == 0)
-                        freqMap.Remove(prevFreq);
-               
-                    if (!freqMap.ContainsKey(currFreq))
-                        freqMap.Add(currFreq, new List<string> { message});
-                    else
-                        freqMap[currFreq].Add(message);
-                }
+                InvalidateOldLogs(message);
             }
+        }
+        public static bool InvalidateOldLogs(string message)
+        {
+            int prevFreq = timeMap[message].Count;
+
+            var diff = (timeMap[message].First.Value.Subtract(timeMap[message].Last.Value).TotalMinutes);
+            while (diff > 60)
+            {
+                diff = (timeMap[message].Last.Value.Subtract(timeMap[message].First.Value).TotalMinutes);
+                timeMap[message].RemoveLast();
+            }
+            int currFreq = timeMap[message].Count;
+            if (prevFreq != currFreq)
+            {
+                freqMap[prevFreq].Remove(message);
+                if (freqMap[prevFreq].Count == 0)
+                    freqMap.Remove(prevFreq);
+
+                if (!freqMap.ContainsKey(currFreq))
+                    freqMap.Add(currFreq, new List<string> { message });
+                else
+                    freqMap[currFreq].Add(message);
+                return true;
+            }
+            return false;
         }
         public static void printMostFrequent(int n)
         {
@@ -78,9 +92,19 @@ namespace LoggerLimiter
             var kvpairs = freqMap.Take(n);
             foreach(var kv in kvpairs)
             {
-                Console.WriteLine(kv.Value);
+                foreach(var message in kv.Value)
+                {
+                    InvalidateOldLogs(message);
+                }
             }
-            
+            var kvpairs1 = freqMap.Take(n);
+            foreach (var kv in kvpairs1)
+            {
+                foreach (var message in kv.Value)
+                {
+                    Console.WriteLine(message);
+                }
+            }
         }
     }
 }
